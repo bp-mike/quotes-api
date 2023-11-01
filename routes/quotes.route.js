@@ -1,71 +1,14 @@
-const router = require('express').Router();
-const { PrismaClient } =  require('@prisma/client')
+const router = require("express").Router();
+const quotesController = require("../controllers/quotes.controller");
 
-const prisma = new PrismaClient()
+router.post("/", quotesController.createQuote);
 
-router.post('/', async (req, res, next) => {
-  try {
-    const quote = await prisma.quote.create({
-      data: req.body
-    })
-    res.json(quote)
-  } catch (error) {
-    next(error);
-  }
-});
+router.get("/", quotesController.getAllQuotes);
 
-router.get('/', async (req, res, next) => {
-  try {
-    const quotes = await prisma.quote.findMany({
-    })
-    res.json(quotes)
-  } catch (error) {
-    next(error);
-  }
-});
+router.get("/:id", quotesController.getOneQuote);
 
-router.get('/:id', async (req, res, next) => {
-  try {
-    const {id} = req.params
-    const quote = await prisma.quote.findUnique({
-      where: {
-        id: Number(id)
-      },
-    })
-    res.json(quote)
-  } catch (error) {
-    next(error)
-  }
-});
+router.delete("/:id", quotesController.deleteQuote);
 
-
-router.delete('/:id', async (req, res, next) => {
-  try {
-    const {id} = req.params
-    const deleteQuote = await prisma.quote.delete({
-      where: {
-        id: Number(id)
-      }
-    })
-    res.json(deleteQuote)
-  } catch (error) {
-    next(error)
-  }
-});
-
-router.patch('/:id', async (req, res, next) => {
-  try {
-    const {id} = req.params
-    const editQuote = await prisma.quote.update({
-      where: {
-        id: Number(id)
-      },
-      data: req.body,
-    })
-    res.json(editQuote)
-  } catch (error) {
-    next(error)
-  }
-});
+router.patch("/:id", quotesController.updateQuote);
 
 module.exports = router;
